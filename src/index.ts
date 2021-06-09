@@ -7,8 +7,6 @@ import {
   NamespaceDefinition,
 } from '@wapc/widl/dist/types/ast';
 import Handlebars from 'handlebars';
-import helpers from 'handlebars-helpers';
-helpers({ handlebars: Handlebars });
 
 Handlebars.registerHelper('isKind', function (this: AbstractNode, kind, options) {
   if (this.kind === kind) {
@@ -18,7 +16,7 @@ Handlebars.registerHelper('isKind', function (this: AbstractNode, kind, options)
   }
 });
 
-Handlebars.registerHelper('joinBlock', function (this: unknown, context: unknown[], separator: string, options) {
+Handlebars.registerHelper('join', function (this: unknown, context: unknown[], separator: string, options) {
   return context.map((el: unknown) => options.fn(el)).join(separator);
 });
 

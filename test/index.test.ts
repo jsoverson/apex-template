@@ -16,9 +16,9 @@ describe('main', function () {
 
 {{#each interface.operations }}
 - {{ name.value ~}}
-  ({{~#joinBlock parameters ', '~}}
+  ({{~#join parameters ', '~}}
     {{~name.value}}: {{type.name.value~}}
-  {{/joinBlock}}) : {{type.name.value}}
+  {{/join}}) : {{type.name.value}}
 {{/each}}
 
 ## Types

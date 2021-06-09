@@ -44,7 +44,6 @@
     "@typescript-eslint/parser": "^4.24.0",
     "@types/yargs": "^16.0.2",
     "@types/handlebars": "^4.1.0",
-    "@types/handlebars-helpers": "^0.5.2",
     "chai": "^4.3.4",
     "eslint": "^7.26.0",
     "mocha": "^8.4.0",
@@ -56,7 +55,6 @@
   "dependencies": {
     "@wapc/widl": "0.0.9",
     "handlebars": "^4.7.7",
-    "handlebars-helpers": "^0.10.0",
     "yargs": "^17.0.1"
   }
 }

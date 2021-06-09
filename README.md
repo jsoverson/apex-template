@@ -39,7 +39,7 @@ This utility uplevels the first `namespace` and `interface` it finds to the tree
 
 ## Helpers
 
-This library includes all of the helpers in [`handlebars-helpers`](https://github.com/helpers/handlebars-helpers) as well as the following:
+This library includes two helpers to help templating from the command line:
 
 ### `isKind`
 
@@ -57,7 +57,7 @@ A conditional block that tests the kind of WIDL node
 The `joinBlock` maps over ever element with the passed block and joins them with the supplied separator.
 
 ```hbs
-({{#joinBlock parameters ', '}}{{name}}:{{type}}{{/joinBlock}})
+({{#join parameters ', '}}{{name}}:{{type}}{{/join}})
 ```
 
 Given `parameters` of `[{name: 'someName', type:'someValue'},{name: 'someName2', type:'someValue2'}]`, the joinBlock above would output:
