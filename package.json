@@ -1,7 +1,7 @@
 {
-  "name": "",
-  "description": "",
-  "author": "",
+  "name": "widl-template",
+  "description": "Use WIDL as input to Handlebars templates for code generation, documentation, etc",
+  "author": "jsoverson@gmail.com",
   "version": "0.0.0",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -16,6 +16,10 @@
     "test:unit": "mocha",
     "test": "npm run lint && npm run test:unit"
   },
+  "bin": {
+    "widl-template": "./dist/src/cli.js"
+  },
+  "keywords": [],
   "mocha": {
     "extends": "etc/.mocharc.json"
   },
@@ -23,7 +27,6 @@
   "eslintConfig": {
     "extends": "./etc/.eslintrc.json"
   },
-  "keywords": [],
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.18",
@@ -32,6 +35,9 @@
     "@types/node": "^15.3.1",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
+    "@types/yargs": "^16.0.2",
+    "@types/handlebars": "^4.1.0",
+    "@types/handlebars-helpers": "^0.5.2",
     "chai": "^4.3.4",
     "eslint": "^7.26.0",
     "mocha": "^8.4.0",
@@ -39,5 +45,11 @@
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "@wapc/widl": "0.0.9",
+    "handlebars": "^4.7.7",
+    "handlebars-helpers": "^0.10.0",
+    "yargs": "^17.0.1"
   }
 }

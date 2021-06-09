@@ -1,0 +1,18 @@
+# Namespace: '{{ namespace.name.value }}'
+
+## Interface
+
+{{#each interface.operations }}
+- {{ name.value ~}}
+  ({{~#joinBlock parameters ', '~}}
+    {{~name.value}}: {{type.name.value~}}
+  {{/joinBlock}}) : {{type.name.value}}
+{{/each}}
+
+## Types
+
+{{#each definitions }}
+{{#isKind "TypeDefinition"}}
+- {{ name.value }}
+{{/isKind}}
+{{/each}}

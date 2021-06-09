@@ -1,24 +1,47 @@
 import { expect } from 'chai';
 import { describe } from 'mocha';
+import fs from 'fs';
 
-import src from '../src';
-
-import pkg from '../package.json';
+import { render } from '../src';
 
 describe('main', function () {
-  it('should have been changed', () => {
-    expect(src()).to.not.throw();
-  });
+  it('should render templates', () => {
+    const widlSrc = fs.readFileSync(`${__dirname}/sample.widl`, 'utf-8');
+    const result = render(
+      widlSrc,
+      `
+# Namespace: '{{ namespace.name.value }}'
 
-  describe('package.json', function () {
-    it('name should be filled out', () => {
-      expect(pkg.name).to.not.equal('');
-    });
-    it('description should be filled out', () => {
-      expect(pkg.description).to.not.equal('');
-    });
-    it('author should be filled out', () => {
-      expect(pkg.author).to.not.equal('');
-    });
+## Interface
+
+{{#each interface.operations }}
+- {{ name.value ~}}
+  ({{~#joinBlock parameters ', '~}}
+    {{~name.value}}: {{type.name.value~}}
+  {{/joinBlock}}) : {{type.name.value}}
+{{/each}}
+
+## Types
+
+{{#each definitions }}
+{{#isKind "TypeDefinition"}}
+- {{ name.value }}
+{{/isKind}}
+{{/each}}
+`,
+    );
+    const expected = `
+# Namespace: 'TestNamespace'
+
+## Interface
+
+- testOperation(arg1: string, arg2: bytes) : Response
+
+## Types
+
+- Response
+- Message
+`;
+    expect(result).to.equal(expected);
   });
 });
