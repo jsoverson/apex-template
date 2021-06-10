@@ -52,16 +52,72 @@ A conditional block that tests the kind of WIDL node
 {{/isKind}}
 ```
 
-### `joinBlock`
+### `join`
 
-The `joinBlock` maps over ever element with the passed block and joins them with the supplied separator.
+The `join` maps over ever element with the passed block and joins them with the supplied separator.
 
 ```hbs
 ({{#join parameters ', '}}{{name}}:{{type}}{{/join}})
 ```
 
-Given `parameters` of `[{name: 'someName', type:'someValue'},{name: 'someName2', type:'someValue2'}]`, the joinBlock above would output:
+Given `parameters` of `[{name: 'someName', type:'someValue'},{name: 'someName2', type:'someValue2'}]`, the join above would output:
 
 ```
 (someName: someValue, someName2: someValue2)
+```
+
+### `camelCase`
+
+### `capitalCase`
+
+### `constantCase`
+
+### `dotCase`
+
+### `headerCase`
+
+### `noCase`
+
+### `paramCase`
+
+### `pascalCase`
+
+### `pathCase`
+
+### `sentenceCase`
+
+### `snakeCase`
+
+Case-related helpers that expose functions from [change-case-all](https://www.npmjs.com/package/change-case-all) e.g.
+
+```hbs
+{{pascalCase context}}
+```
+
+### `upperCase`
+
+### `lowerCase`
+
+Uppercase & lowercase helpers that transform an entire string
+
+```hbs
+{{upperCase context}}
+```
+
+### `switch`/`case`/`default`
+
+An implementation of switch/case statements as handlebars helpers.
+
+```hbs
+{{#switch kind}}
+  {{#case 'A'}}
+    First block
+  {{/case}}
+  {{#case 'B'}}
+    Second block
+  {{/case}}
+  {{#default}}
+    Default block
+  {{/default}}
+{{/switch}}
 ```
