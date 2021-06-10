@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "@wapc/widl": "0.0.9",
+    "change-case-all": "^1.0.14",
     "handlebars": "^4.7.7",
     "yargs": "^17.0.1"
   }

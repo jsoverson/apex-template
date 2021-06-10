@@ -44,4 +44,42 @@ describe('main', function () {
 `;
     expect(result).to.equal(expected);
   });
+  describe('helpers', () => {
+    it('should expose snakeCase', () => {
+      const result = render(`namespace "testNameSpace"`, `{{snakeCase namespace.name.value}}`);
+      expect(result).to.equal(`test_name_space`);
+    });
+    it('should expose pascalCase', () => {
+      const result = render(`namespace "test_name_space"`, `{{pascalCase namespace.name.value}}`);
+      expect(result).to.equal(`TestNameSpace`);
+    });
+    it('should expose camelCase', () => {
+      const result = render(`namespace "test_name_space"`, `{{camelCase namespace.name.value}}`);
+      expect(result).to.equal(`testNameSpace`);
+    });
+    it('should expose switch/case/default', () => {
+      const src = `namespace "TEST"`;
+      const template = `
+{{#switch namespace.name.value}}
+  {{#case 'TEST'}}CASE for 'TEST'{{/case}}
+  {{#case 'OTHER'}}CASE for 'OTHER{{/case}}
+  {{#default}}DEFAULT BLOCK{{/default}}
+{{/switch}}
+`;
+      const result = render(src, template);
+      expect(result.trim()).to.equal(`CASE for 'TEST'`);
+    });
+    it('should hit default on failed cases switch/case/default', () => {
+      const src = `namespace "TEST"`;
+      const template = `
+{{#switch namespace.name.value}}
+  {{#case 'SOMETHING'}}CASE for 'SOMETHING'{{/case}}
+  {{#case 'OTHER'}}CASE for 'OTHER{{/case}}
+  {{#default}}DEFAULT BLOCK{{/default}}
+{{/switch}}
+`;
+      const result = render(src, template);
+      expect(result.trim()).to.equal(`DEFAULT BLOCK`);
+    });
+  });
 });

@@ -1,28 +1,14 @@
 import { parse } from '@wapc/widl';
-import {
-  AbstractNode,
-  Definition,
-  Document,
-  InterfaceDefinition,
-  NamespaceDefinition,
-} from '@wapc/widl/dist/types/ast';
+import { Definition, Document, InterfaceDefinition, NamespaceDefinition } from '@wapc/widl/dist/types/ast';
 import Handlebars from 'handlebars';
+import { registerHelpers } from './helpers';
+registerHelpers(Handlebars.registerHelper.bind(Handlebars));
 
-Handlebars.registerHelper('isKind', function (this: AbstractNode, kind, options) {
-  if (this.kind === kind) {
-    return options.fn(this);
-  } else {
-    return options.inverse(this);
-  }
-});
-
-Handlebars.registerHelper('join', function (this: unknown, context: unknown[], separator: string, options) {
-  return context.map((el: unknown) => options.fn(el)).join(separator);
-});
+export const handlebars = Handlebars;
 
 // WIDL docs should only have one namespace & interface so we're uplevelling the definitions
 // to an easily accessible property on the root
-interface TemplateFriendlyWidlDocument {
+export interface TemplateFriendlyWidlDocument {
   namespace?: NamespaceDefinition;
   interface?: InterfaceDefinition;
 }
