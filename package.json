@@ -37,13 +37,14 @@
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.18",
+    "@types/debug": "^4.1.5",
     "@types/find-root": "^1.1.2",
+    "@types/handlebars": "^4.1.0",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.3.1",
+    "@types/yargs": "^16.0.2",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
-    "@types/yargs": "^16.0.2",
-    "@types/handlebars": "^4.1.0",
     "chai": "^4.3.4",
     "eslint": "^7.26.0",
     "mocha": "^8.4.0",
@@ -55,6 +56,7 @@
   "dependencies": {
     "@wapc/widl": "0.0.9",
     "change-case-all": "^1.0.14",
+    "debug": "^4.3.1",
     "handlebars": "^4.7.7",
     "yargs": "^17.0.1"
   }

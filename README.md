@@ -37,6 +37,16 @@ Use the [WIDL validator's](https://jsoverson.github.io/widl-validator/) AST view
 
 This utility uplevels the first `namespace` and `interface` it finds to the tree's root so you can more easily access them in your templates.
 
+## Partials
+
+Register all `.hbs` files in a directory as partials by using the `registerPartials()` function or by passing a directory to the CLI via `-p` or `--partials`
+
+```js
+import { registerPartials } from 'widl-template';
+
+await registerPartials('partialsdir');
+```
+
 ## Helpers
 
 This library includes two helpers to help templating from the command line:

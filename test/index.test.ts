@@ -1,8 +1,9 @@
 import { expect } from 'chai';
 import { describe } from 'mocha';
 import fs from 'fs';
+import path from 'path';
 
-import { render } from '../src';
+import { registerPartials, render } from '../src';
 
 describe('main', function () {
   it('should render templates', () => {
@@ -80,6 +81,18 @@ describe('main', function () {
 `;
       const result = render(src, template);
       expect(result.trim()).to.equal(`DEFAULT BLOCK`);
+    });
+  });
+  describe('partials directory', () => {
+    it('should automatic register all partials in a directory', async () => {
+      await registerPartials(path.join(__dirname, 'partials'));
+      const result = render(``, `{{> testPartial}}`);
+      expect(result).to.equal(`test-partial`);
+    });
+    it('should automatic register all partials in a directory', async () => {
+      await registerPartials(path.join(__dirname, 'partials'));
+      expect(() => render(``, `{{> notAPartial}}`)).to.throw();
+      expect(() => render(``, `{{> notAPartial.other}}`)).to.throw();
     });
   });
 });
