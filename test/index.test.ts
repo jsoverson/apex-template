@@ -58,29 +58,65 @@ describe('main', function () {
       const result = render(`namespace "test_name_space"`, `{{camelCase namespace.name.value}}`);
       expect(result).to.equal(`testNameSpace`);
     });
-    it('should expose switch/case/default', () => {
-      const src = `namespace "TEST"`;
-      const template = `
+    describe('switch/case', () => {
+      it('should hit a single case', () => {
+        const src = `namespace "TEST"`;
+        const template = `
 {{#switch namespace.name.value}}
   {{#case 'TEST'}}CASE for 'TEST'{{/case}}
   {{#case 'OTHER'}}CASE for 'OTHER{{/case}}
   {{#default}}DEFAULT BLOCK{{/default}}
 {{/switch}}
 `;
-      const result = render(src, template);
-      expect(result.trim()).to.equal(`CASE for 'TEST'`);
-    });
-    it('should hit default on failed cases switch/case/default', () => {
-      const src = `namespace "TEST"`;
-      const template = `
+        const result = render(src, template);
+        expect(result.trim()).to.equal(`CASE for 'TEST'`);
+      });
+      it('should hit default on failed cases switch/case/default', () => {
+        const src = `namespace "TEST"`;
+        const template = `
 {{#switch namespace.name.value}}
   {{#case 'SOMETHING'}}CASE for 'SOMETHING'{{/case}}
   {{#case 'OTHER'}}CASE for 'OTHER{{/case}}
   {{#default}}DEFAULT BLOCK{{/default}}
 {{/switch}}
 `;
-      const result = render(src, template);
-      expect(result.trim()).to.equal(`DEFAULT BLOCK`);
+        const result = render(src, template);
+        expect(result.trim()).to.equal(`DEFAULT BLOCK`);
+      });
+      it('should be work with multiple switches on one context', () => {
+        const src = `namespace "TEST"`;
+        const template = `
+{{#switch namespace.name.value}}
+  {{#case 'TEST'}}CASE for 'TEST'{{/case}}
+  {{#case 'OTHER'}}CASE for 'OTHER'{{/case}}
+  {{#default}}DEFAULT BLOCK{{/default}}
+{{/switch}}
+{{#switch namespace.name.value}}
+  {{#case 'SOMETHING'}}CASE for 'SOMETHING' IN SECOND SWITCH{{/case}}
+  {{#case 'OTHER'}}CASE for 'OTHER' IN SECOND SWITCH{{/case}}
+  {{#default}}DEFAULT BLOCK IN SECOND SWITCH{{/default}}
+{{/switch}}
+`;
+        const result = render(src, template);
+        expect(result.trim()).to.match(/CASE for 'TEST'\s*DEFAULT BLOCK IN SECOND SWITCH/);
+      });
+      it('should nest', () => {
+        const src = `namespace "TEST"`;
+        const template = `
+{{#switch namespace.name.kind}}
+  {{#case "Name"}}
+    {{#switch namespace.name.value}}
+      {{#case 'TEST'}}CASE for 'TEST'{{/case}}
+      {{#case 'OTHER'}}CASE for 'OTHER'{{/case}}
+      {{#default}}DEFAULT BLOCK{{/default}}
+    {{/switch}}
+  {{/case}}
+  {{#default}}root{{/default}}
+{{/switch}}
+`;
+        const result = render(src, template);
+        expect(result.trim()).to.match(/CASE for 'TEST'/);
+      });
     });
   });
   describe('partials directory', () => {
