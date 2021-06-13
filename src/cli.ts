@@ -3,6 +3,8 @@
 import fs from 'fs';
 import yargs from 'yargs';
 import { registerPartials, render } from './index';
+import path from 'path';
+import { debug } from './debug';
 
 interface Arguments {
   widl: string;
@@ -13,11 +15,14 @@ interface Arguments {
 export async function run(args: Arguments): Promise<void> {
   try {
     const widlPath = args.widl;
+    const widlPathRoot = path.dirname(widlPath);
     const templatePath = args.template;
     const widlSrc = fs.readFileSync(widlPath, 'utf-8');
     const templateSrc = fs.readFileSync(templatePath, 'utf-8');
     if (args.partials) await registerPartials(args.partials);
-    console.log(render(widlSrc, templateSrc));
+    const options = { root: widlPathRoot };
+    debug('Options: %o', options);
+    console.log(render(widlSrc, templateSrc, options));
   } catch (e) {
     console.error(e.message);
     process.exit(1);

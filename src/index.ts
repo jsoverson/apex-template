@@ -6,8 +6,6 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { debug } from './debug';
 
-registerHelpers(Handlebars.registerHelper.bind(Handlebars));
-
 export const handlebars = Handlebars;
 
 // WIDL docs should only have one namespace & interface so we're uplevelling the definitions
@@ -25,7 +23,7 @@ function isInterface(def: Definition): def is InterfaceDefinition {
   return def.getKind() === 'InterfaceDefinition';
 }
 
-function parseWidl(src: string): Pick<Document, 'definitions'> & TemplateFriendlyWidlDocument {
+export function parseWidl(src: string): Pick<Document, 'definitions'> & TemplateFriendlyWidlDocument {
   // Allow rendering templates even with empty WIDL src (useful for sandbox exploration)
   if (src.length === 0) return { definitions: [] };
   try {
@@ -40,7 +38,13 @@ function parseWidl(src: string): Pick<Document, 'definitions'> & TemplateFriendl
   }
 }
 
-export function render(widlSrc: string, templateSrc: string): string {
+export interface TemplateOptions {
+  root?: string;
+}
+
+export function render(widlSrc: string, templateSrc: string, options: TemplateOptions = {}): string {
+  debug('Registering helpers');
+  registerHelpers(Handlebars.registerHelper.bind(Handlebars), options);
   debug('Compiling template');
   const template = Handlebars.compile(templateSrc);
   debug('Parsing WIDL');
@@ -80,6 +84,6 @@ export async function registerPartials(dir: string): Promise<void> {
 }
 
 // Converts fancy objects to POJSOs
-function toJson(obj: unknown): string {
+function toJson(obj: unknown): any {
   return JSON.parse(JSON.stringify(obj, null, undefined));
 }

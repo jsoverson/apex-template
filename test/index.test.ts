@@ -103,19 +103,22 @@ describe('main', function () {
       it('should nest', () => {
         const src = `namespace "TEST"`;
         const template = `
-{{#switch namespace.name.kind}}
-  {{#case "Name"}}
-    {{#switch namespace.name.value}}
-      {{#case 'TEST'}}CASE for 'TEST'{{/case}}
-      {{#case 'OTHER'}}CASE for 'OTHER'{{/case}}
-      {{#default}}DEFAULT BLOCK{{/default}}
+{{#with namespace}}
+{{#switch kind ~}}
+  {{#case "NamespaceDefinition"}}
+    {{#switch name.value}}
+      {{#case "string"}}String{{/case}}
+      {{#default}}{{name.value}}{{/default}}
     {{/switch}}
   {{/case}}
-  {{#default}}root{{/default}}
-{{/switch}}
+  {{#default}}
+    root
+  {{/default}}
+{{~/switch}}
+{{/with}}
 `;
         const result = render(src, template);
-        expect(result.trim()).to.match(/CASE for 'TEST'/);
+        expect(result.trim()).to.match(/TEST/);
       });
     });
   });
