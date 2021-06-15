@@ -2,7 +2,7 @@
   "name": "widl-template",
   "description": "Use WIDL as input to Handlebars templates for code generation, documentation, etc",
   "author": "jsoverson@gmail.com",
-  "version": "0.2.1",
+  "version": "0.4.0",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
