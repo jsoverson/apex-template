@@ -154,6 +154,13 @@ export function registerHelpers(
     return options.fn(tree);
   });
 
+  registerHelper('eachWithName', function (this: any, context: any[], value: string, options) {
+    const matches = context.filter((annotation: Named) => annotation.name.value === value);
+    if (matches.length > 0) {
+      return matches.map((match: unknown) => options.fn(match)).join('');
+    }
+  });
+
   registerHelper('withAnnotation', function (this: any, value: string, options) {
     if (!this.annotations) throw new Error('No annotations on context');
     const annotations = this.annotations.filter((annotation: Named) => annotation.name.value === value);

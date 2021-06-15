@@ -58,6 +58,13 @@ describe('main', function () {
       const result = render(`namespace "test_name_space"`, `{{camelCase namespace.name.value}}`);
       expect(result).to.equal(`testNameSpace`);
     });
+    it('should expose eachWithName', () => {
+      const result = render(
+        `type Foo {}\n type Bar {}`,
+        `{{#eachWithName definitions "Foo"}}{{name.value}}{{/eachWithName}}`,
+      );
+      expect(result).to.equal(`Foo`);
+    });
     describe('switch/case', () => {
       it('should hit a single case', () => {
         const src = `namespace "TEST"`;
