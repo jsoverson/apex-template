@@ -131,3 +131,24 @@ An implementation of switch/case statements as handlebars helpers.
   {{/default}}
 {{/switch}}
 ```
+
+### `eachWithName`
+
+A block that iterates over every object in a passed list that has a `name` property equal to the passed name.
+Used to iterate over fields or definitions to find a specific name
+
+```hbs
+{{#eachWithName definitions 'MyType'}}
+  Some description specific to MyType
+{{/eachWithName}}
+```
+
+### `codegen-type`
+
+This is a partial code generator that turns a WIDL type node (i.e. from a field or argument, not a TypeDefinition) back into a WIDL string.
+
+```
+{{#each fields}}
+  {{name.value}} : {{codegen-type type}}
+{{/each}}
+```

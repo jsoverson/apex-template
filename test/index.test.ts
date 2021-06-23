@@ -46,6 +46,13 @@ describe('main', function () {
     expect(result).to.equal(expected);
   });
   describe('helpers', () => {
+    it('should codegen types', () => {
+      const result = render(
+        `type Test { foo: string }`,
+        `{{#eachWithName definitions "Test"}}{{#eachWithName fields "foo"}}{{codegen-type type}}{{/eachWithName}}{{/eachWithName}}`,
+      );
+      expect(result).to.equal(`string`);
+    });
     it('should expose snakeCase', () => {
       const result = render(`namespace "testNameSpace"`, `{{snakeCase namespace.name.value}}`);
       expect(result).to.equal(`test_name_space`);

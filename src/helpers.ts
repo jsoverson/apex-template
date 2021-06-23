@@ -1,6 +1,6 @@
 import Handlebars from 'handlebars';
 import * as changeCase from 'change-case-all';
-import { AbstractNode, Named } from '@wapc/widl/dist/types/ast';
+import { AbstractNode, Kind, ListType, MapType, Named, Optional } from '@wapc/widl/ast';
 import { parseWidl, TemplateOptions } from '.';
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -83,6 +83,28 @@ export function registerHelpers(
       default:
         return options.inverse(this);
     }
+  });
+
+  // This should be a separate module but won't until it does a complete codegen
+  function codegen(node: AbstractNode): string {
+    switch (node.kind) {
+      case Kind.Named:
+        return (<Named>node).name.value;
+      case Kind.Optional:
+        return `${codegen((<Optional>node).type as unknown as AbstractNode)}?`;
+      case Kind.MapType:
+        return `{${codegen((<MapType>node).keyType as unknown as AbstractNode)}:${codegen(
+          (<MapType>node).valueType as unknown as AbstractNode,
+        )}`;
+      case Kind.ListType:
+        return `[${codegen((<ListType>node).type as unknown as AbstractNode)}]`;
+      default:
+        throw new Error('Unhandled node');
+    }
+  }
+
+  registerHelper('codegen-type', function (node: AbstractNode, options) {
+    return codegen(node);
   });
 
   //switch/case/default implementation modified from https://stackoverflow.com/questions/53398408/switch-case-with-default-in-handlebars-js
