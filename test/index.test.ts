@@ -3,11 +3,12 @@ import { describe } from 'mocha';
 import fs from 'fs';
 import path from 'path';
 
-import { registerPartials, render, handlebars } from '../src';
+import { registerPartials, render, handlebars, registerHelpers } from '../src';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function raw_render(template: string, options: any) {
-  return handlebars.compile(template)(options);
+function raw_render(template: string, context: any, options?: any) {
+  registerHelpers(options);
+  return handlebars.compile(template)(context);
 }
 
 describe('main', function () {

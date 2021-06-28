@@ -114,6 +114,17 @@ Uppercase & lowercase helpers that transform an entire string
 {{upperCase context}}
 ```
 
+### `import` block
+
+Import another `widl` file
+
+```hbs
+{{#import 'other/file.widl'}}
+  # Hello from
+  {{namespace.name.value}}
+{{/import}}
+```
+
 ### `dirname`
 
 Exposes Node.js's [path.dirname](https://nodejs.org/api/path.html#path_path_dirname_path).

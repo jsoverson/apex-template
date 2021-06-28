@@ -1,7 +1,7 @@
 import { parse } from '@wapc/widl';
 import { Definition, Document, InterfaceDefinition, NamespaceDefinition } from '@wapc/widl/dist/types/ast';
 import Handlebars from 'handlebars';
-import { registerHelpers } from './helpers';
+import { registerHelpers as internalRegisterHelpers } from './helpers';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { debug } from './debug';
@@ -42,9 +42,13 @@ export interface TemplateOptions {
   root?: string;
 }
 
-export function render(widlSrc: string, templateSrc: string, options: TemplateOptions = {}): string {
+export function registerHelpers(options: TemplateOptions = {}): void {
   debug('Registering helpers');
-  registerHelpers(Handlebars.registerHelper.bind(Handlebars), options);
+  internalRegisterHelpers(Handlebars.registerHelper.bind(Handlebars), options);
+}
+
+export function render(widlSrc: string, templateSrc: string, options: TemplateOptions = {}): string {
+  registerHelpers(options);
   debug('Compiling template');
   const template = Handlebars.compile(templateSrc);
   debug('Parsing WIDL');
