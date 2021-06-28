@@ -114,6 +114,30 @@ Uppercase & lowercase helpers that transform an entire string
 {{upperCase context}}
 ```
 
+### `dirname`
+
+Exposes Node.js's [path.dirname](https://nodejs.org/api/path.html#path_path_dirname_path).
+
+```hbs
+{{dirname value}}
+```
+
+### `basename`
+
+Exposes Node.js's [path.basename](https://nodejs.org/api/path.html#path_path_dirname_path).
+
+```hbs
+{{basename value}}
+```
+
+### `replace`
+
+Simple string replacement helper.
+
+```hbs
+{{replace original '.js' ''}}
+```
+
 ### `switch`/`case`/`default`
 
 An implementation of switch/case statements as handlebars helpers.

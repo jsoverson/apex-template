@@ -18,6 +18,18 @@ export function registerHelpers(
     }
   });
 
+  registerHelper('basename', function (context: string) {
+    return path.basename(context);
+  });
+
+  registerHelper('dirname', function (context: string) {
+    return path.dirname(context);
+  });
+
+  registerHelper('replace', function (context: string, match: string, replacement: string) {
+    return context.replace(match, replacement);
+  });
+
   registerHelper('join', function (context: unknown[], separator: string, options) {
     return context.map((el: unknown) => options.fn(el)).join(separator);
   });
@@ -103,12 +115,11 @@ export function registerHelpers(
     }
   }
 
-  registerHelper('codegen-type', function (node: AbstractNode, options) {
+  registerHelper('codegen-type', function (node: AbstractNode) {
     return codegen(node);
   });
 
   //switch/case/default implementation modified from https://stackoverflow.com/questions/53398408/switch-case-with-default-in-handlebars-js
-  const SWITCH_CONTEXTS = new Map();
   class SwitchContexts {
     map: Map<unknown, SwitchContext[]> = new Map();
     get(ctx: unknown) {
@@ -168,7 +179,7 @@ export function registerHelpers(
     }
   });
 
-  registerHelper('import', function (this: any, value: string, options) {
+  registerHelper('import', function (value: string, options) {
     const resolvedPath = path.join(templateOptions.root || '', `${value}.widl`);
     debug('Importing %o from %o', value, resolvedPath);
     const widlSource = readFileSync(resolvedPath, 'utf-8');
@@ -176,14 +187,14 @@ export function registerHelpers(
     return options.fn(tree);
   });
 
-  registerHelper('eachWithName', function (this: any, context: any[], value: string, options) {
+  registerHelper('eachWithName', function (context: Named[], value: string, options) {
     const matches = context.filter((annotation: Named) => annotation.name.value === value);
     if (matches.length > 0) {
       return matches.map((match: unknown) => options.fn(match)).join('');
     }
   });
 
-  registerHelper('withAnnotation', function (this: any, value: string, options) {
+  registerHelper('withAnnotation', function (this: { annotations: [] }, value: string, options) {
     if (!this.annotations) throw new Error('No annotations on context');
     const annotations = this.annotations.filter((annotation: Named) => annotation.name.value === value);
     if (annotations.length > 0) {
@@ -193,7 +204,7 @@ export function registerHelpers(
     }
   });
 
-  registerHelper('unlessAnnotation', function (this: any, value: string, options) {
+  registerHelper('unlessAnnotation', function (this: { annotations: [] }, value: string, options) {
     if (!this.annotations) throw new Error('No annotations on context');
     const annotations = this.annotations.filter((annotation: Named) => annotation.name.value === value);
     if (annotations.length > 0) {
@@ -203,7 +214,7 @@ export function registerHelpers(
     }
   });
 
-  registerHelper('panic', function (msg: string, context: any) {
+  registerHelper('panic', function (msg: string, context: unknown) {
     console.error(`Template panic: ${msg}`);
     console.error(context);
     process.exit(1);

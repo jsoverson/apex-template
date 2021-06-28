@@ -84,6 +84,6 @@ export async function registerPartials(dir: string): Promise<void> {
 }
 
 // Converts fancy objects to POJSOs
-function toJson(obj: unknown): any {
+function toJson(obj: unknown): unknown {
   return JSON.parse(JSON.stringify(obj, null, undefined));
 }

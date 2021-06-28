@@ -3,7 +3,12 @@ import { describe } from 'mocha';
 import fs from 'fs';
 import path from 'path';
 
-import { registerPartials, render } from '../src';
+import { registerPartials, render, handlebars } from '../src';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function raw_render(template: string, options: any) {
+  return handlebars.compile(template)(options);
+}
 
 describe('main', function () {
   it('should render templates', () => {
@@ -52,6 +57,18 @@ describe('main', function () {
         `{{#eachWithName definitions "Test"}}{{#eachWithName fields "foo"}}{{codegen-type type}}{{/eachWithName}}{{/eachWithName}}`,
       );
       expect(result).to.equal(`string`);
+    });
+    it('should expose dirname', () => {
+      const result = raw_render(`{{dirname value}}`, { value: '/test/dir/file.js' });
+      expect(result).to.equal(`/test/dir`);
+    });
+    it('should expose basename', () => {
+      const result = raw_render(`{{basename value}}`, { value: '/test/dir/file.js' });
+      expect(result).to.equal(`file.js`);
+    });
+    it('should expose replace', () => {
+      const result = raw_render(`{{replace value ".js" ""}}`, { value: 'file.js' });
+      expect(result).to.equal(`file`);
     });
     it('should expose snakeCase', () => {
       const result = render(`namespace "testNameSpace"`, `{{snakeCase namespace.name.value}}`);
@@ -137,12 +154,12 @@ describe('main', function () {
     });
   });
   describe('partials directory', () => {
-    it('should automatic register all partials in a directory', async () => {
+    it('should automatically register all partials in a directory', async () => {
       await registerPartials(path.join(__dirname, 'partials'));
       const result = render(``, `{{> testPartial}}`);
       expect(result).to.equal(`test-partial`);
     });
-    it('should automatic register all partials in a directory', async () => {
+    it('should throw on unfound partials', async () => {
       await registerPartials(path.join(__dirname, 'partials'));
       expect(() => render(``, `{{> notAPartial}}`)).to.throw();
       expect(() => render(``, `{{> notAPartial.other}}`)).to.throw();
