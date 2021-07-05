@@ -46,22 +46,19 @@ export function registerHelpers(options: TemplateOptions = {}): void {
   debug('Registering helpers');
   internalRegisterHelpers(Handlebars.registerHelper.bind(Handlebars), options);
 }
+import util from 'util';
 
 export function render(widlSrc: string, templateSrc: string, options: TemplateOptions = {}): string {
   registerHelpers(options);
   debug('Compiling template');
-  const template = Handlebars.compile(templateSrc);
+  const template = Handlebars.compile(templateSrc, {});
   debug('Parsing WIDL');
   const tree = parseWidl(widlSrc);
   debug('Converting WIDL AST to plain JS object');
   const json = toJson(tree);
   debug('Rendering template');
-  try {
-    const result = template(json);
-    return result;
-  } catch (e) {
-    throw new Error(`Error rendering template: ${e.message}`);
-  }
+  const result = template(json);
+  return result;
 }
 
 export async function registerPartials(dir: string): Promise<void> {

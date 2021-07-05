@@ -19,18 +19,22 @@ export function registerHelpers(
   });
 
   registerHelper('basename', function (context: string) {
+    if (typeof context !== 'string') throw new Error('Object passed to basename helper was not a string');
     return path.basename(context);
   });
 
   registerHelper('dirname', function (context: string) {
+    if (typeof context !== 'string') throw new Error('Object passed to dirname helper was not a string');
     return path.dirname(context);
   });
 
   registerHelper('replace', function (context: string, match: string, replacement: string) {
+    if (typeof context !== 'string') throw new Error('Object passed to replace helper was not a string');
     return context.replace(match, replacement);
   });
 
   registerHelper('join', function (context: unknown[], separator: string, options) {
+    if (!Array.isArray(context)) throw new Error('Object passed to join helper was not an Array');
     return context.map((el: unknown) => options.fn(el)).join(separator);
   });
 
@@ -53,16 +57,19 @@ export function registerHelpers(
     const fn = (changeCase as any)[fnName];
     if (!fn) throw new Error(`Expected function ${fnName} from change-case-all not found`);
     registerHelper(fnName, function (context: string) {
+      if (typeof context !== 'string') throw new Error(`Object passed to ${fnName} helper was not a string`);
       return fn(context);
     });
   });
 
   registerHelper('upperCase', function (context: string) {
+    if (typeof context !== 'string') throw new Error('Object passed to upperCase helper was not a string');
     return context.toUpperCase();
   });
 
-  registerHelper('upperCase', function (context: string) {
-    return context.toUpperCase();
+  registerHelper('lowerCase', function (context: string) {
+    if (typeof context !== 'string') throw new Error('Object passed to lowerCase helper was not a string');
+    return context.toLowerCase();
   });
 
   registerHelper('debug', function (context: unknown) {
@@ -116,6 +123,7 @@ export function registerHelpers(
   }
 
   registerHelper('codegen-type', function (node: AbstractNode) {
+    if (!node.kind) throw new Error('Object passed to codegen-type helper was not a WIDL node');
     return codegen(node);
   });
 
@@ -180,6 +188,7 @@ export function registerHelpers(
   });
 
   registerHelper('import', function (value: string, options) {
+    if (typeof value !== 'string') throw new Error('Object passed to import helper was not a string');
     const resolvedPath = path.join(templateOptions.root || '', `${value}.widl`);
     debug('Importing %o from %o', value, resolvedPath);
     const widlSource = readFileSync(resolvedPath, 'utf-8');
