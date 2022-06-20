@@ -1,5 +1,5 @@
-import { parse } from '@wapc/widl';
-import { Definition, Document, InterfaceDefinition, NamespaceDefinition } from '@wapc/widl/dist/types/ast';
+import { parse, ast } from '@apexlang/core';
+
 import Handlebars from 'handlebars';
 import { registerHelpers as internalRegisterHelpers } from './helpers';
 import { promises as fs } from 'fs';
@@ -8,33 +8,37 @@ import { debug } from './debug';
 
 export const handlebars = Handlebars;
 
-// WIDL docs should only have one namespace & interface so we're uplevelling the definitions
+// Apex docs should only have one namespace & interface so we're uplevelling the definitions
 // to an easily accessible property on the root
-export interface TemplateFriendlyWidlDocument {
-  namespace?: NamespaceDefinition;
-  interface?: InterfaceDefinition;
+export interface TemplateFriendlyApexDocument {
+  namespace?: ast.NamespaceDefinition;
+  interface?: ast.InterfaceDefinition;
 }
 
-function isNamespace(def: Definition): def is NamespaceDefinition {
+function isNamespace(def: ast.Definition): def is ast.NamespaceDefinition {
   return def.getKind() === 'NamespaceDefinition';
 }
 
-function isInterface(def: Definition): def is InterfaceDefinition {
+function isInterface(def: ast.Definition): def is ast.InterfaceDefinition {
   return def.getKind() === 'InterfaceDefinition';
 }
 
-export function parseWidl(src: string): Pick<Document, 'definitions'> & TemplateFriendlyWidlDocument {
-  // Allow rendering templates even with empty WIDL src (useful for sandbox exploration)
+export function parseApex(src: string): Pick<ast.Document, 'definitions'> & TemplateFriendlyApexDocument {
+  // Allow rendering templates even with empty Apex src (useful for sandbox exploration)
   if (src.length === 0) return { definitions: [] };
   try {
-    const tree: Document & TemplateFriendlyWidlDocument = parse(src, undefined, { noLocation: true, noSource: true });
+    const tree: ast.Document & TemplateFriendlyApexDocument = parse(src, undefined, {
+      noLocation: true,
+      noSource: true,
+    });
     const additions = {
       namespace: tree.definitions.find(isNamespace),
       interface: tree.definitions.find(isInterface),
     };
     return Object.assign({}, tree, additions);
   } catch (e) {
-    throw new Error(`Error parsing WIDL: ${e.message}`);
+    console.error('Error parsing Apex');
+    throw e;
   }
 }
 
@@ -48,13 +52,13 @@ export function registerHelpers(options: TemplateOptions = {}): void {
 }
 import util from 'util';
 
-export function render(widlSrc: string, templateSrc: string, options: TemplateOptions = {}): string {
+export function render(apexSrc: string, templateSrc: string, options: TemplateOptions = {}): string {
   registerHelpers(options);
   debug('Compiling template');
   const template = Handlebars.compile(templateSrc, {});
-  debug('Parsing WIDL');
-  const tree = parseWidl(widlSrc);
-  debug('Converting WIDL AST to plain JS object');
+  debug('Parsing Apex');
+  const tree = parseApex(apexSrc);
+  debug('Converting Apex AST to plain JS object');
   const json = toJson(tree);
   debug('Rendering template');
   const result = template(json);
@@ -80,7 +84,8 @@ export async function registerPartials(dir: string): Promise<void> {
         }),
     );
   } catch (e) {
-    throw new Error(`Could not read partials directory '${dir}': ${e.message}`);
+    console.error(`Could not read partials directory '${dir}'`);
+    throw e;
   }
 }
 

@@ -7,35 +7,35 @@ import path from 'path';
 import { debug } from './debug';
 
 interface Arguments {
-  widl: string;
+  apex: string;
   template: string;
   partials?: string;
 }
 
 export async function run(args: Arguments): Promise<void> {
   try {
-    const widlPath = args.widl;
-    const widlPathRoot = path.dirname(widlPath);
+    const apexPath = args.apex;
+    const apexPathRoot = path.dirname(apexPath);
     const templatePath = args.template;
-    const widlSrc = fs.readFileSync(widlPath, 'utf-8');
+    const apexSrc = fs.readFileSync(apexPath, 'utf-8');
     const templateSrc = fs.readFileSync(templatePath, 'utf-8');
     if (args.partials) await registerPartials(args.partials);
-    const options = { root: widlPathRoot };
+    const options = { root: apexPathRoot };
     debug('Options: %o', options);
-    console.log(render(widlSrc, templateSrc, options));
+    console.log(render(apexSrc, templateSrc, options));
   } catch (e) {
-    console.error(e.message);
+    console.error(e);
     process.exit(1);
   }
 }
 
 yargs(process.argv.slice(2))
   .command(
-    '$0 <widl> <template> [options]',
-    'Use WIDL schemas as input data to handlebars templates',
+    '$0 <apex> <template> [options]',
+    'Use Apex schemas as input data to handlebars templates',
     yargs => {
       yargs
-        .positional('widl', {
+        .positional('apex', {
           demandOption: true,
           type: 'string',
           description: 'Path to schema file',
@@ -52,7 +52,7 @@ yargs(process.argv.slice(2))
             description: 'Directory of partial templates',
           },
         })
-        .example('$0 schema.widl template.hbs', 'Outputs the results of rendering the template');
+        .example('$0 schema.apex template.hbs', 'Outputs the results of rendering the template');
     },
     run,
   )

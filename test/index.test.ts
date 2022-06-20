@@ -13,9 +13,9 @@ function raw_render(template: string, context: any, options?: any) {
 
 describe('main', function () {
   it('should render templates', () => {
-    const widlSrc = fs.readFileSync(`${__dirname}/sample.widl`, 'utf-8');
+    const apexSrc = fs.readFileSync(`${__dirname}/sample.apex`, 'utf-8');
     const result = render(
-      widlSrc,
+      apexSrc,
       `
 # Namespace: '{{ namespace.name.value }}'
 

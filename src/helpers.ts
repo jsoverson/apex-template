@@ -1,7 +1,7 @@
 import Handlebars from 'handlebars';
 import * as changeCase from 'change-case-all';
-import { AbstractNode, Kind, ListType, MapType, Named, Optional } from '@wapc/widl/ast';
-import { parseWidl, TemplateOptions } from '.';
+import { ast } from '@apexlang/core';
+import { parseApex, TemplateOptions } from '.';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { debug } from './debug';
@@ -10,7 +10,7 @@ export function registerHelpers(
   registerHelper: typeof Handlebars.registerHelper,
   templateOptions: TemplateOptions,
 ): void {
-  registerHelper('isKind', function (this: AbstractNode, kind: string, options) {
+  registerHelper('isKind', function (this: ast.AbstractNode, kind: string, options) {
     if (this.kind === kind) {
       return options.fn(this);
     } else {
@@ -105,25 +105,25 @@ export function registerHelpers(
   });
 
   // This should be a separate module but won't until it does a complete codegen
-  function codegen(node: AbstractNode): string {
+  function codegen(node: ast.AbstractNode): string {
     switch (node.kind) {
-      case Kind.Named:
-        return (<Named>node).name.value;
-      case Kind.Optional:
-        return `${codegen((<Optional>node).type as unknown as AbstractNode)}?`;
-      case Kind.MapType:
-        return `{${codegen((<MapType>node).keyType as unknown as AbstractNode)}:${codegen(
-          (<MapType>node).valueType as unknown as AbstractNode,
+      case ast.Kind.Named:
+        return (<ast.Named>node).name.value;
+      case ast.Kind.Optional:
+        return `${codegen((<ast.Optional>node).type as unknown as ast.AbstractNode)}?`;
+      case ast.Kind.MapType:
+        return `{${codegen((<ast.MapType>node).keyType as unknown as ast.AbstractNode)}:${codegen(
+          (<ast.MapType>node).valueType as unknown as ast.AbstractNode,
         )}`;
-      case Kind.ListType:
-        return `[${codegen((<ListType>node).type as unknown as AbstractNode)}]`;
+      case ast.Kind.ListType:
+        return `[${codegen((<ast.ListType>node).type as unknown as ast.AbstractNode)}]`;
       default:
         throw new Error('Unhandled node');
     }
   }
 
-  registerHelper('codegen-type', function (node: AbstractNode) {
-    if (!node.kind) throw new Error('Object passed to codegen-type helper was not a WIDL node');
+  registerHelper('codegen-type', function (node: ast.AbstractNode) {
+    if (!node.kind) throw new Error('Object passed to codegen-type helper was not a Apex node');
     return codegen(node);
   });
 
@@ -189,15 +189,15 @@ export function registerHelpers(
 
   registerHelper('import', function (value: string, options) {
     if (typeof value !== 'string') throw new Error('Object passed to import helper was not a string');
-    const resolvedPath = path.join(templateOptions.root || '', `${value}.widl`);
+    const resolvedPath = path.join(templateOptions.root || '', `${value}.apex`);
     debug('Importing %o from %o', value, resolvedPath);
-    const widlSource = readFileSync(resolvedPath, 'utf-8');
-    const tree = parseWidl(widlSource);
+    const apexSource = readFileSync(resolvedPath, 'utf-8');
+    const tree = parseApex(apexSource);
     return options.fn(tree);
   });
 
-  registerHelper('eachWithName', function (context: Named[], value: string, options) {
-    const matches = context.filter((annotation: Named) => annotation.name.value === value);
+  registerHelper('eachWithName', function (context: ast.Named[], value: string, options) {
+    const matches = context.filter((annotation: ast.Named) => annotation.name.value === value);
     if (matches.length > 0) {
       return matches.map((match: unknown) => options.fn(match)).join('');
     }
@@ -205,7 +205,7 @@ export function registerHelpers(
 
   registerHelper('withAnnotation', function (this: { annotations: [] }, value: string, options) {
     if (!this.annotations) throw new Error('No annotations on context');
-    const annotations = this.annotations.filter((annotation: Named) => annotation.name.value === value);
+    const annotations = this.annotations.filter((annotation: ast.Named) => annotation.name.value === value);
     if (annotations.length > 0) {
       return annotations.map((annotation: unknown) => options.fn(annotation)).join('');
     } else {
@@ -215,7 +215,7 @@ export function registerHelpers(
 
   registerHelper('unlessAnnotation', function (this: { annotations: [] }, value: string, options) {
     if (!this.annotations) throw new Error('No annotations on context');
-    const annotations = this.annotations.filter((annotation: Named) => annotation.name.value === value);
+    const annotations = this.annotations.filter((annotation: ast.Named) => annotation.name.value === value);
     if (annotations.length > 0) {
       return annotations.map((annotation: unknown) => options.inverse(annotation)).join('');
     } else {

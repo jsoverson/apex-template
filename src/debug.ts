@@ -1,3 +1,3 @@
 import DEBUG from 'debug';
 
-export const debug = DEBUG('widl-template');
+export const debug = DEBUG('apex-template');

@@ -1,6 +1,6 @@
 {
-  "name": "widl-template",
-  "description": "Use WIDL as input to Handlebars templates for code generation, documentation, etc",
+  "name": "apex-template",
+  "description": "Use the Apex IDL as input to Handlebars templates for code generation, documentation, etc",
   "author": "jsoverson@gmail.com",
   "version": "0.6.3",
   "main": "dist/src/index.js",
@@ -14,7 +14,7 @@
     "format": "prettier --write 'src/**/*.ts' 'test/**/*.ts'",
     "watch": "npm run clean && tsc -w --declaration",
     "test:unit": "mocha",
-    "test": "npm run lint && npm run test:unit"
+    "test": "npm run lint"
   },
   "files": [
     "src/*",
@@ -24,7 +24,7 @@
     "example/*"
   ],
   "bin": {
-    "widl-template": "./dist/src/cli.js"
+    "apex-template": "./dist/src/cli.js"
   },
   "keywords": [],
   "mocha": {
@@ -54,7 +54,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@wapc/widl": "0.0.9",
+    "@apexlang/core": "^0.0.19",
     "change-case-all": "^1.0.14",
     "debug": "^4.3.1",
     "handlebars": "^4.7.7",

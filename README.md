@@ -1,11 +1,17 @@
-# widl-template: WIDL Handlebars Templater
+# apex-template: Apex Handlebars Templater
 
-This library and CLI utility allows you to pass serialized [WIDL]() to a Handlebars template for code generation, automatic documentation, linking, etc.
+## Deprecated
+
+Any functionality in this package should be rolled up into core apex code generators. This package is still functional but should not receive much maintenance.
+
+## About
+
+This library and CLI utility allows you to pass serialized [Apex]() to a Handlebars template for code generation, automatic documentation, linking, etc.
 
 ## Installation
 
 ```shell
-$ npm install widl-template
+$ npm install apex-template
 ```
 
 ## Usage
@@ -13,25 +19,25 @@ $ npm install widl-template
 On the command line:
 
 ```
-$ widl-template
+$ apex-template
 ```
 
 In JavaScript
 
 ```js
-const { render } = require('widl-template');
+const { render } = require('apex-template');
 
-const widlSrc = // string of WIDL
+const apexSrc = // string of Apex
 const templateSrc = // string of Handlebars template source
 
-const renderedTemplate = render(widlSrc, templateSrc);
+const renderedTemplate = render(apexSrc, templateSrc);
 
 console.log(renderedTemplate);
 ```
 
 ## Data format
 
-Use the [WIDL validator's](https://jsoverson.github.io/widl-validator/) AST view to visualize the structure of the WIDL data.
+Use the [Apex validator's](https://jsoverson.github.io/apex-validator/) AST view to visualize the structure of the Apex data.
 
 ### Notes: Minor AST changes
 
@@ -42,7 +48,7 @@ This utility uplevels the first `namespace` and `interface` it finds to the tree
 Register all `.hbs` files in a directory as partials by using the `registerPartials()` function or by passing a directory to the CLI via `-p` or `--partials`
 
 ```js
-import { registerPartials } from 'widl-template';
+import { registerPartials } from 'apex-template';
 
 await registerPartials('partialsdir');
 ```
@@ -53,7 +59,7 @@ This library includes two helpers to help templating from the command line:
 
 ### `isKind`
 
-A conditional block that tests the kind of WIDL node
+A conditional block that tests the kind of Apex node
 
 ```hbs
 {{#isKind 'TypeDefinition'}}
@@ -116,10 +122,10 @@ Uppercase & lowercase helpers that transform an entire string
 
 ### `import` block
 
-Import another `widl` file
+Import another `apex` file
 
 ```hbs
-{{#import 'other/file.widl'}}
+{{#import 'other/file.apex'}}
   # Hello from
   {{namespace.name.value}}
 {{/import}}
@@ -180,7 +186,7 @@ Used to iterate over fields or definitions to find a specific name
 
 ### `codegen-type`
 
-This is a partial code generator that turns a WIDL type node (i.e. from a field or argument, not a TypeDefinition) back into a WIDL string.
+This is a partial code generator that turns a Apex type node (i.e. from a field or argument, not a TypeDefinition) back into a Apex string.
 
 ```
 {{#each fields}}
