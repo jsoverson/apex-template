@@ -2,7 +2,7 @@
   "name": "apex-template",
   "description": "Use the Apex IDL as input to Handlebars templates for code generation, documentation, etc",
   "author": "jsoverson@gmail.com",
-  "version": "0.6.3",
+  "version": "1.0.0",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
