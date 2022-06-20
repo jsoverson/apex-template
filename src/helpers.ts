@@ -1,10 +1,10 @@
 import Handlebars from 'handlebars';
 import * as changeCase from 'change-case-all';
 import { ast } from '@apexlang/core';
-import { parseApex, TemplateOptions } from '.';
+import { parseApex, TemplateOptions } from './index.js';
 import { readFileSync } from 'fs';
 import path from 'path';
-import { debug } from './debug';
+import { debug } from './debug.js';
 
 export function registerHelpers(
   registerHelper: typeof Handlebars.registerHelper,

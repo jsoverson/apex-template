@@ -1,10 +1,10 @@
 import { parse, ast } from '@apexlang/core';
 
 import Handlebars from 'handlebars';
-import { registerHelpers as internalRegisterHelpers } from './helpers';
+import { registerHelpers as internalRegisterHelpers } from './helpers.js';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { debug } from './debug';
+import { debug } from './debug.js';
 
 export const handlebars = Handlebars;
 

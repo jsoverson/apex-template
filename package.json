@@ -3,6 +3,7 @@
   "description": "Use the Apex IDL as input to Handlebars templates for code generation, documentation, etc",
   "author": "jsoverson@gmail.com",
   "version": "1.0.0",
+  "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
@@ -14,7 +15,7 @@
     "format": "prettier --write 'src/**/*.ts' 'test/**/*.ts'",
     "watch": "npm run clean && tsc -w --declaration",
     "test:unit": "mocha",
-    "test": "npm run lint"
+    "test": "npm run lint && npm run test:unit"
   },
   "files": [
     "src/*",
@@ -28,7 +29,8 @@
   },
   "keywords": [],
   "mocha": {
-    "extends": "etc/.mocharc.json"
+    "extends": "etc/.mocharc.json",
+    "loader": "ts-node/esm"
   },
   "prettier": "./etc/.prettierrc.json",
   "eslintConfig": {
@@ -40,18 +42,18 @@
     "@types/debug": "^4.1.5",
     "@types/find-root": "^1.1.2",
     "@types/handlebars": "^4.1.0",
-    "@types/mocha": "^8.2.2",
+    "@types/mocha": "^9.1.1",
     "@types/node": "^15.3.1",
     "@types/yargs": "^16.0.2",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
     "chai": "^4.3.4",
     "eslint": "^7.26.0",
-    "mocha": "^8.4.0",
+    "mocha": "^10.0.0",
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "@apexlang/core": "^0.0.19",

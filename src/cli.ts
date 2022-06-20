@@ -2,9 +2,9 @@
 
 import fs from 'fs';
 import yargs from 'yargs';
-import { registerPartials, render } from './index';
+import { registerPartials, render } from './index.js';
 import path from 'path';
-import { debug } from './debug';
+import { debug } from './debug.js';
 
 interface Arguments {
   apex: string;

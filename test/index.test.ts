@@ -1,9 +1,12 @@
 import { expect } from 'chai';
 import { describe } from 'mocha';
 import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
 
-import { registerPartials, render, handlebars, registerHelpers } from '../src';
+import { registerPartials, render, handlebars, registerHelpers } from '../src/index.js';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function raw_render(template: string, context: any, options?: any) {
