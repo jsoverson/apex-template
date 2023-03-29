@@ -1,14 +1,18 @@
 import Handlebars from 'handlebars';
 import * as changeCase from 'change-case-all';
 import { ast } from '@apexlang/core';
-import { parseApex, TemplateOptions } from './index.js';
+import { parseApex, TemplateDocument, TemplateOptions } from './index.js';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { debug } from './debug.js';
+import { TypeDefinition } from '@apexlang/core/dist/ast/definitions.js';
+import { MapType, Named, Type } from '@apexlang/core/dist/ast/types.js';
+import { AbstractNode } from '@apexlang/core/dist/ast/index.js';
 
 export function registerHelpers(
   registerHelper: typeof Handlebars.registerHelper,
   templateOptions: TemplateOptions,
+  doc: TemplateDocument,
 ): void {
   registerHelper('isKind', function (this: ast.AbstractNode, kind: string, options) {
     if (this.kind === kind) {
@@ -210,6 +214,17 @@ export function registerHelpers(
       return annotations.map((annotation: unknown) => options.fn(annotation)).join('');
     } else {
       return options.inverse(this);
+    }
+  });
+
+  registerHelper('withType', function (ty: AbstractNode, options) {
+    if (!ty) throw new Error(`Object passed to withType is not a valid type node: ${ty}`);
+    const types = doc.definitions.filter(d => d.getKind() === ast.Kind.TypeDefinition) as TypeDefinition[];
+    const name = ty.kind === ast.Kind.Named && (ty as Named).name.value;
+    if (!name) return '';
+    const filtered = types.filter(d => d.name.value === name);
+    if (filtered.length > 0) {
+      return filtered.map((t: TypeDefinition) => options.fn(t)).join('');
     }
   });
 

@@ -8,6 +8,8 @@ import { debug } from './debug.js';
 
 export const handlebars = Handlebars;
 
+export type TemplateDocument = Pick<ast.Document, 'definitions'> & TemplateFriendlyApexDocument;
+
 // Apex docs should only have one namespace & interface so we're uplevelling the definitions
 // to an easily accessible property on the root
 export interface TemplateFriendlyApexDocument {
@@ -23,7 +25,7 @@ function isInterface(def: ast.Definition): def is ast.InterfaceDefinition {
   return def.getKind() === 'InterfaceDefinition';
 }
 
-export function parseApex(src: string): Pick<ast.Document, 'definitions'> & TemplateFriendlyApexDocument {
+export function parseApex(src: string): TemplateDocument {
   // Allow rendering templates even with empty Apex src (useful for sandbox exploration)
   if (src.length === 0) return { definitions: [] };
   try {
@@ -46,18 +48,17 @@ export interface TemplateOptions {
   root?: string;
 }
 
-export function registerHelpers(options: TemplateOptions = {}): void {
+export function registerHelpers(options: TemplateOptions = {}, doc: TemplateDocument): void {
   debug('Registering helpers');
-  internalRegisterHelpers(Handlebars.registerHelper.bind(Handlebars), options);
+  internalRegisterHelpers(Handlebars.registerHelper.bind(Handlebars), options, doc);
 }
-import util from 'util';
 
 export function render(apexSrc: string, templateSrc: string, options: TemplateOptions = {}): string {
-  registerHelpers(options);
-  debug('Compiling template');
-  const template = Handlebars.compile(templateSrc, {});
   debug('Parsing Apex');
   const tree = parseApex(apexSrc);
+  registerHelpers(options, tree);
+  debug('Compiling template');
+  const template = Handlebars.compile(templateSrc, {});
   debug('Converting Apex AST to plain JS object');
   const json = toJson(tree);
   debug('Rendering template');

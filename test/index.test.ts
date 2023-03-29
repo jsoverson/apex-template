@@ -3,14 +3,17 @@ import { describe } from 'mocha';
 import fs from 'fs';
 import path, { dirname } from 'path';
 
-import { registerPartials, render, handlebars, registerHelpers } from '../src/index.js';
+import { registerPartials, render, handlebars, registerHelpers, parseApex } from '../src/index.js';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const apexSrc = fs.readFileSync(`${__dirname}/sample.apex`, 'utf-8');
+const doc = parseApex(apexSrc);
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function raw_render(template: string, context: any, options?: any) {
-  registerHelpers(options);
+  registerHelpers(options, doc);
   return handlebars.compile(template)(context);
 }
 
